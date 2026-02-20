@@ -36,4 +36,25 @@ return res.status(200).json({data:movieList,success:true})
   res.status(500).json({message:error.message,success:false})
 }
 }
-export { addMovie ,listMovie};
+
+//controller for Delete Movie
+const deleteMovie=async(req,res)=>{
+  const {id}=req.params;
+  if(!id){
+  return res.status(404).json({message:'id didnt get',success:false})
+  }
+  try {
+  const isDelete=movieModel.findByIdAndUpdate(id,{isDelete:true},{
+    new:true,
+    runValidators:true
+    })
+  if(!isDelete){
+  return res.status(404).json({message:'movie Didnt delete',success:false})
+  }
+  return res.status(200).json({message:'Movie Sucesfully Deleted',success:true})
+  } catch (error) {
+    res.status(500).json({message:error.message,success:false})
+  }
+}
+
+export { addMovie ,listMovie,deleteMovie};
