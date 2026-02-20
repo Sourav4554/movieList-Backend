@@ -71,7 +71,7 @@ const deleteMovie = async (req, res) => {
 //controller for update movie
 const updateMovie = async (req, res) => {
   try {
-    const isUpdate = await movieModel.findByIdAndUpdate(req.params, req.body, {
+    const isUpdate = await movieModel.findByIdAndUpdate(req.params.id, req.body, {
       returnDocument: "after",
       runValidators: true,
     });
