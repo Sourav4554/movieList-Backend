@@ -52,7 +52,7 @@ const deleteMovie = async (req, res) => {
       id,
       { isDeleted: true },
       {
-        new: true,
+        returnDocument: 'after',
         runValidators: true,
       }
     );
