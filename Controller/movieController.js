@@ -44,7 +44,7 @@ const deleteMovie=async(req,res)=>{
   return res.status(404).json({message:'id didnt get',success:false})
   }
   try {
-  const isDelete=movieModel.findByIdAndUpdate(id,{isDelete:true},{
+  const isDelete=await movieModel.findByIdAndUpdate(id,{isDeleted:true},{
     new:true,
     runValidators:true
     })
