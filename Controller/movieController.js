@@ -1,17 +1,43 @@
 import movieModel from "../Models/movieSchema.js";
 import AppError from "../Utilits/AppError.js";
-import { errorHandler } from "../Utilits/errorHandler.js";
+import { cloudinary } from "../configuration/cloudinary.js";
 //controller for add movie
 const addMovie = async (req, res, next) => {
   const { tittle, category, rating } = req.body;
+   const imageFile=req.file;
 
-  if (!tittle || !category || !rating) {
+  if (!tittle || !category || !rating || !imageFile) {
     return next(new AppError("All fields required", 400, false));
   }
+  
+ //cloudinary upload
+ const result=await new Promise((resolve,reject)=>{
+   cloudinary.uploader.upload_stream(
+    {
+      folder: "movieHub",
+      public_id: `image-${Date.now()}`,
+      resource_type: "image",
+      transformation: [
+        { width: 800, crop: "scale" },
+        { quality: "auto" },
+        { fetch_format: "auto" }
+      ]
+    },
+    (err,data)=>{
+    if(err){
+    reject(new AppError('cloudinary upload failed',400,false))
+    }else{
+    resolve(data)
+    }
+    }
+    ).end(imageFile.buffer)
+  })
+  
   const movie = await movieModel.create({
     tittle,
     category,
     rating,
+    image:result.secure_url
   });
 
   return res
