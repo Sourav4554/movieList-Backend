@@ -7,18 +7,21 @@ const movieSchema = new Schema(
       type: String,
       required: true,
     },
-    image:{
-    type:String,
-    required:true
+    image: {
+      type: String,
+      required: true,
+    },
+    public_id: {
+      type: String,
     },
     category: {
       type: String,
-      enum:{
-        values:['action','comedy','drama','horror','sci-fi'],
-        message:'This category is not allowed'
+      enum: {
+        values: ["action", "comedy", "drama", "horror", "sci-fi"],
+        message: "This category is not allowed",
       },
-      lowercase:true,
-      trim:true,
+      lowercase: true,
+      trim: true,
       required: true,
     },
     rating: {

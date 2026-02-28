@@ -21,7 +21,7 @@ const errorHandler = (err, req, res, next) => {
     });
   }
   err.statusCode = err.statusCode || 500;
-  err.success = err.success;
+  err.success = err.success || false;
   err.status = err.status || "error";
 
   console.log("ERROR", err);

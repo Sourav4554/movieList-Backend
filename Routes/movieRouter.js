@@ -12,5 +12,5 @@ const movieRouter = express.Router();
 movieRouter.post("/addmovie",uploadImage.single('image'),addMovie);
 movieRouter.get("/list", listMovie);
 movieRouter.delete("/delete/:id", deleteMovie);
-movieRouter.patch("/update/:id", updateMovie);
+movieRouter.patch("/update/:id", uploadImage.single('image'),updateMovie);
 export default movieRouter;
