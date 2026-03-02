@@ -19,6 +19,7 @@ const addMovie = async (req, res, next) => {
     rating,
     image: result.secure_url,
     public_id: result.public_id,
+    userDetails:req.user._id
   });
 
   return res
@@ -29,7 +30,7 @@ const addMovie = async (req, res, next) => {
 //controller for retrive movie
 const listMovie = async (req, res, next) => {
   const movieList = await movieModel.find(
-    { isDeleted: false },
+    {$and:[{userDetails:req.user._id},{isDeleted:false}]},
     { isDeleted: 0, createdAt: 0, updatedAt: 0, public_id: 0 }
   );
   if (!movieList.length) {

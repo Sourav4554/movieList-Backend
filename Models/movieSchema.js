@@ -30,6 +30,10 @@ const movieSchema = new Schema(
       max: 10,
       required: true,
     },
+    userDetails:{
+    type:String,
+    required:true,
+    },
     isDeleted: {
       type: Boolean,
       default: false,
