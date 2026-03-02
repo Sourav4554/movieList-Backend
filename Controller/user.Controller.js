@@ -11,6 +11,7 @@ sameSite:isProduction?'none':'lax',
 priority:'high',
 path:'/'
 }
+//controller for signup
 const Signup = async (req, res, next) => {
   const { name, email, password } = req.body;
   if (!name || !email || !password) {
@@ -44,6 +45,26 @@ const Signup = async (req, res, next) => {
     .json({ message: "Sucessfully registered", succes: true });
 };
 
-const Login = async (req, res, next) => {};
+//controller for userlogin
+const Login = async (req, res, next) => {
+const {email,password}=req.body
+if(!email || !password){
+return next(new AppError('fill required fields',400,false))
+}
+const isLogin=await userModel.findOne({email});
+if(!isLogin){
+return next(new AppError('user not found please register',404,false))
+}
+const checkCredentials=await bcrypt.compare(password,isLogin.password)
+if(!checkCredentials){
+return next(new AppError('Invalid email or password',401,false))
+}
+const token=generateToken(isLogin._id)
+res.cookie('token',token,{
+...cookieOptions,
+maxAge:24 * 60 * 60 * 1000,
+})
+return res.status(200).json({message:'Login succesfull',success:true})
+};
 
 export { Signup, Login };
