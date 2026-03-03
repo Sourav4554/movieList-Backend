@@ -52,6 +52,9 @@ if(!email || !password){
 return next(new AppError('fill required fields',400,false))
 }
 const isLogin=await userModel.findOne({email});
+if(isLogin.googleId){
+  return next(new AppError('This account was created using Google. Please login with Google.',400,false))
+}
 if(!isLogin){
 return next(new AppError('user not found please register',404,false))
 }
@@ -67,4 +70,11 @@ maxAge:24 * 60 * 60 * 1000,
 return res.status(200).json({message:'Login succesfull',success:true})
 };
 
-export { Signup, Login };
+//controller for google authentication
+const googleAuth=async(req,res)=>{
+console.log(req.user)
+return res.status(200).json({message:'success',success:true})
+}
+
+
+export { Signup, Login,googleAuth};

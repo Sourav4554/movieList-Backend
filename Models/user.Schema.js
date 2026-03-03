@@ -12,7 +12,20 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required: function () {
+      return this.provider !== "google";
+    },
+  },
+  provider: {
+    type: String,
+    emum: ["local", "google"],
+    default: "local",
+  },
+  googleId: {
+    type: String,
+  },
+  avatar: {
+    type: String,
   },
 });
 const userModel = mongoose.model.user || mongoose.model("user", userSchema);
