@@ -71,9 +71,17 @@ return res.status(200).json({message:'Login succesfull',success:true})
 };
 
 //controller for google authentication
-const googleAuth=async(req,res)=>{
-console.log(req.user)
-return res.status(200).json({message:'success',success:true})
+const googleAuth=async(req,res,next)=>{
+  const user= req.user;
+  if(!user){
+  return next(new AppError('user not found Login again',404,false))
+  }
+  const token=generateToken(user._id)
+  res.cookie('token',token,{
+  ...cookieOptions,
+  maxAge:24*60*60*1000
+})
+return res.status(200).json({message:'Login successfull',success:true})
 }
 
 

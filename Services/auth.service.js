@@ -7,7 +7,7 @@ const googleAuthentication = async (
   done
 ) => {
   try {
-    console.log(profile)
+    //console.log(profile)
     let user = await userModel.findOne({ googleId: profile.id });
     if (user) {
       return done(null, user);
