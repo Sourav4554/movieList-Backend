@@ -17,6 +17,6 @@ movieRouter.post(
   addMovie
 );
 movieRouter.get("/list", authMiddleware, listMovie);
-movieRouter.delete("/delete/:id", deleteMovie);
-movieRouter.patch("/update/:id", uploadImage.single("image"), updateMovie);
+movieRouter.delete("/delete/:id",authMiddleware,deleteMovie);
+movieRouter.patch("/update/:id",authMiddleware,uploadImage.single("image"), updateMovie);
 export default movieRouter;

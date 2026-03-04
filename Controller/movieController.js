@@ -19,7 +19,7 @@ const addMovie = async (req, res, next) => {
     rating,
     image: result.secure_url,
     public_id: result.public_id,
-    userDetails:req.user._id
+    userDetails: req.user._id,
   });
 
   return res
@@ -30,7 +30,7 @@ const addMovie = async (req, res, next) => {
 //controller for retrive movie
 const listMovie = async (req, res, next) => {
   const movieList = await movieModel.find(
-    {$and:[{userDetails:req.user._id},{isDeleted:false}]},
+    { $and: [{ userDetails: req.user._id }, { isDeleted: false }] },
     { isDeleted: 0, createdAt: 0, updatedAt: 0, public_id: 0 }
   );
   if (!movieList.length) {
@@ -46,12 +46,15 @@ const deleteMovie = async (req, res, next) => {
   if (!id) {
     return next(new AppError("id must be required", 400, false));
   }
-  const movie = await movieModel.findById(id, { public_id: 1, isDeleted: 1 });
+  const movie = await movieModel.findById(id).select("userDetails isDeleted");
   if (!movie) {
-    return next(new AppError("id is false", 400, false));
+    return next(new AppError("id is wrong", 400, false));
   }
-   movie.isDeleted=true;
-   const isDelete=await movie.save();
+  if (movie.userDetails !== req.user._id.toString()) {
+    return next(new AppError("You are not allowed to delete this movie",403,false));
+  }
+  movie.isDeleted = true;
+  const isDelete = await movie.save();
   if (!isDelete) {
     return next(new AppError("cant delete movie", 404, false));
   }
@@ -69,7 +72,10 @@ const updateMovie = async (req, res, next) => {
   }
   const movie = await movieModel.findById(id);
   if (!movie) {
-    return next(new AppError("id is false", 400, false));
+    return next(new AppError("id is wrong", 400, false));
+  }
+  if (movie.userDetails !== req.user._id.toString()) {
+    return next(new AppError("You are not allowed to delete this movie",403,false));
   }
   if (imageFile) {
     const result = await updateCloudinary(movie.public_id, imageFile);
@@ -79,7 +85,7 @@ const updateMovie = async (req, res, next) => {
   Object.assign(movie, req.body);
   const isUpdate = await movie.save();
   if (!isUpdate) {
-    return next(new AppError("Cant update", 400, false));
+    return next(new AppError("Can't update", 400, false));
   }
   return res
     .status(200)
